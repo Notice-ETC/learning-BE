@@ -9,6 +9,7 @@ Backend API ที่ใช้ Express.js + TypeScript + MongoDB/Mongoose สำ
 - [โครงสร้าง Database Model](#โครงสร้าง-database-model)
 - [โครงสร้าง Util Functions](#โครงสร้าง-util-functions)
 - [Router](#router)
+- [API Endpoints](#api-endpoints)
 - [Exercises](#exercises)
 - [Scripts](#scripts)
 - [การติดตั้งและใช้งาน](#การติดตั้งและใช้งาน)
@@ -17,6 +18,7 @@ Backend API ที่ใช้ Express.js + TypeScript + MongoDB/Mongoose สำ
 ## 🎯 ภาพรวม
 
 โปรเจกต์นี้เป็น Backend API ที่ใช้:
+
 - **Express.js** - Web framework สำหรับ Node.js
 - **TypeScript** - Type-safe JavaScript
 - **MongoDB/Mongoose** - Database และ ODM
@@ -62,9 +64,20 @@ backend/
 src/Database/{modelName}/
 ├── {modelName}.ts           # Mongoose Model
 ├── Schema/
-│   └── Schema.ts            # TypeScript Schema สำหรับ validation
-└── controller/              # Controller functions
+│   ├── type.ts              # TypeScript types และ interfaces
+│   ├── Schema.ts            # Mongoose Schema (ถ้ามี)
+│   └── validation.ts        # Validation functions (ถ้ามี)
+└── Controller/              # Controller functions
+    └── index.ts
 ```
+
+**ตัวอย่างโครงสร้าง Pet Model:**
+
+- `Pet.ts` - Export Mongoose Model และ types
+- `Schema/type.ts` - PetType, PetStatus enums และ interfaces (IPet, IPetSchema)
+- `Schema/Pet.Schema.ts` - Mongoose Schema definition
+- `Schema/validation.ts` - Validation functions สำหรับ create และ update
+- `Controller/index.ts` - Controller functions (CRUD operations)
 
 ### ตัวอย่าง: สร้าง Model Account
 
@@ -113,7 +126,7 @@ const AccountSchema: Schema = new Schema<IAccount>(
   },
   {
     timestamps: true,
-  }
+  },
 )
 
 const Account = mongoose.model<IAccount>('Account', AccountSchema)
@@ -201,6 +214,7 @@ app.use('/account', accountRouter)
 ### เมื่อไหร่ควรใช้ Util Functions?
 
 ใช้ Util Functions เมื่อ:
+
 - มี function ที่ถูกเรียกใช้จากหลายไฟล์ (เช่น controllers, routers, หรือ models หลายตัว)
 - มี logic ที่ใช้ซ้ำและไม่ผูกกับ model หรือ route เฉพาะเจาะจง
 - ต้องการแยก business logic ออกมาเพื่อให้ง่ายต่อการทดสอบและบำรุงรักษา
@@ -258,6 +272,177 @@ import { routeName } from './Router/{routeName}'
 app.use('/{routePath}', routeName)
 ```
 
+## 🌐 API Endpoints
+
+### Pet API
+
+Pet API สำหรับจัดการข้อมูลสัตว์เลี้ยงในระบบ
+
+#### Endpoints
+
+| Method | Endpoint          | Description                        |
+| ------ | ----------------- | ---------------------------------- |
+| GET    | `/pet`            | ดึงสัตว์เลี้ยงทั้งหมด              |
+| GET    | `/pet/:id`        | ดึงสัตว์เลี้ยง 1 ตัว (ใช้ shortid) |
+| POST   | `/pet/create-pet` | สร้างสัตว์เลี้ยงใหม่               |
+| PUT    | `/pet/:id`        | อัปเดตข้อมูลสัตว์เลี้ยง            |
+| DELETE | `/pet/:id`        | ลบสัตว์เลี้ยง                      |
+
+#### ตัวอย่างการใช้งาน
+
+**1. ดึงสัตว์เลี้ยงทั้งหมด**
+
+```bash
+curl http://localhost:5000/pet
+```
+
+**Response:**
+
+```json
+{
+  "message": "Pets retrieved successfully",
+  "data": [...],
+  "count": 0
+}
+```
+
+**2. ดึงสัตว์เลี้ยง 1 ตัว**
+
+```bash
+curl http://localhost:5000/pet/{petId}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Pet retrieved successfully",
+  "data": {
+    "id": "shortid123",
+    "name": "บ๊วย",
+    "type": "cat",
+    "breed": "Persian",
+    "status": "available",
+    "birthDate": "2020-05-15T00:00:00.000Z",
+    "imageUrl": "https://picsum.photos/...",
+    "owner": null,
+    "createdAt": "2024-01-15T00:00:00.000Z",
+    "updatedAt": "2024-01-15T00:00:00.000Z"
+  }
+}
+```
+
+**3. สร้างสัตว์เลี้ยงใหม่**
+
+```bash
+curl -X POST http://localhost:5000/pet/create-pet \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "บ๊วย",
+    "type": "cat",
+    "breed": "Persian",
+    "status": "available",
+    "birthDate": "2020-05-15",
+    "owner": null
+  }'
+```
+
+**Request Body (Optional fields):**
+
+- `status`: `"available" | "adopted" | "sick" | "lost" | "deceased"` (default: `"available"`)
+- `birthDate`: `string | Date | null` (default: `null`)
+- `imageUrl`: `string` (default: auto-generated random image)
+- `owner`: `string | null` (default: `null`)
+
+**Response:**
+
+```json
+{
+  "message": "Pet created successfully",
+  "data": { ... }
+}
+```
+
+**4. อัปเดตสัตว์เลี้ยง**
+
+```bash
+curl -X PUT http://localhost:5000/pet/{petId} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "บ๊วย",
+    "status": "adopted",
+    "owner": "สมชาย"
+  }'
+```
+
+**Request Body:** ทุก field เป็น optional (partial update)
+
+**Response:**
+
+```json
+{
+  "message": "Pet updated successfully",
+  "data": { ... }
+}
+```
+
+**5. ลบสัตว์เลี้ยง**
+
+```bash
+curl -X DELETE http://localhost:5000/pet/{petId}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Pet deleted successfully",
+  "data": { ... }
+}
+```
+
+#### Pet Schema
+
+```typescript
+{
+  id: string // Short ID (auto-generated)
+  name: string // Required
+  type: PetType // Required - Enum: dog, cat, bird, rabbit, fish, other
+  breed: string // Required
+  status: PetStatus // Enum: available, adopted, sick, lost, deceased
+  birthDate: Date | null // Optional (must be in the past)
+  imageUrl: string // Auto-generated if not provided
+  owner: string | null // Optional
+  createdAt: Date // Auto-generated
+  updatedAt: Date // Auto-generated
+}
+```
+
+#### PetType Enum
+
+- `dog` - สุนัข
+- `cat` - แมว
+- `bird` - นก
+- `rabbit` - กระต่าย
+- `fish` - ปลา
+- `other` - อื่นๆ
+
+#### PetStatus Enum
+
+- `available` - รอการรับเลี้ยง
+- `adopted` - มีเจ้าของแล้ว
+- `sick` - ป่วย
+- `lost` - หาย
+- `deceased` - เสียชีวิต
+
+### Other APIs
+
+**ShortId API:**
+
+```bash
+GET /createShortId - สร้าง Short ID ใหม่
+```
+
 ## 📚 Exercises
 
 โปรเจกต์นี้มี TypeScript exercises สำหรับการเรียนรู้ 10 ข้อ:
@@ -276,6 +461,7 @@ app.use('/{routePath}', routeName)
 ### การใช้งาน Exercises
 
 แต่ละ exercise มี 3 ไฟล์:
+
 - `exercise.ts` - โจทย์ที่ต้องแก้ไข
 - `solution.ts` - คำตอบที่ถูกต้อง
 - `README.md` - คำอธิบายและคำแนะนำ
@@ -354,6 +540,8 @@ curl http://localhost:5000/
 curl http://localhost:5000/createShortId
 ```
 
+ดู API Endpoints ทั้งหมดในส่วน [API Endpoints](#api-endpoints)
+
 ### 5. เริ่มเรียนรู้ TypeScript
 
 ```bash
@@ -368,18 +556,22 @@ npm run ex01
 1. **สร้างโฟลเดอร์** `src/Database/{modelName}/`
 
 2. **สร้าง Schema** (`Schema/Schema.ts`)
+
    - กำหนด interface สำหรับข้อมูล
    - สร้าง validation function ที่ไม่ใช้ `as`
 
 3. **สร้าง Mongoose Model** (`{modelName}.ts`)
+
    - ใช้ interface จาก Schema
    - กำหนด Mongoose Schema
 
 4. **สร้าง Controller** (`controller/index.ts`)
+
    - สร้าง functions สำหรับจัดการข้อมูล
    - ใช้ validation function จาก Schema
 
 5. **สร้าง Router** (`src/Router/{routeName}/index.ts`)
+
    - กำหนด routes และ handlers
    - เรียกใช้ functions จาก controller
 
@@ -390,22 +582,31 @@ npm run ex01
 ## 📚 Technologies
 
 ### Core Technologies
+
 - **Express.js** - Web framework สำหรับ Node.js
 - **TypeScript** - Type-safe JavaScript
 - **Mongoose** - MongoDB ODM
 - **Node.js** - Runtime environment
 
 ### Dependencies
+
 - **dotenv** - Environment variables management
 - **CORS** - Cross-Origin Resource Sharing
 - **shortid** - Generate short unique IDs
+- **dayjs** - Lightweight date library for date manipulation and validation
 
 ### Development Dependencies
+
 - **nodemon** - Auto-reload server during development
 - **ts-node** - Run TypeScript files directly
 - **@types/node** - TypeScript definitions for Node.js
 - **@types/express** - TypeScript definitions for Express
 - **@types/cors** - TypeScript definitions for CORS
+- **eslint** - Code linting tool
+- **@typescript-eslint/parser** - TypeScript parser for ESLint
+- **@typescript-eslint/eslint-plugin** - TypeScript ESLint rules
+- **eslint-plugin-unused-imports** - ESLint plugin to detect and remove unused imports
+- **globals** - Global variables definitions for ESLint
 
 ## 🔧 Configuration
 
@@ -416,6 +617,69 @@ npm run ex01
 - `database.ts` - Database connection configuration สำหรับ MongoDB
   - เชื่อมต่อกับ MongoDB โดยใช้ `MONGO_URL` จาก environment variables
   - มี error handling และ validation
+
+### Code Quality Tools
+
+#### Prettier
+
+Prettier ใช้สำหรับจัดรูปแบบโค้ด (formatting) โดยอัตโนมัติ:
+
+- Configuration: `.prettierrc`
+- ตั้งค่า: no semicolons, single quotes, trailing commas, 100 char width
+
+**Scripts:**
+
+```bash
+# จัดรูปแบบโค้ดทั้งหมด
+npm run format
+
+# ตรวจสอบว่าโค้ดถูก format แล้วหรือไม่
+npm run format:check
+```
+
+**หมายเหตุ:** Prettier จะจัดรูปแบบโค้ดเท่านั้น ไม่ได้ลบโค้ดที่ไม่ได้ใช้งาน
+
+#### ESLint
+
+ESLint ใช้สำหรับตรวจสอบและลบโค้ดที่ไม่ได้ใช้งาน (unused imports/variables):
+
+- Configuration: `eslint.config.mjs`
+- Features:
+  - ตรวจจับและลบ unused imports อัตโนมัติ
+  - ตรวจสอบ unused variables
+  - TypeScript support
+  - Node.js globals
+
+**Scripts:**
+
+```bash
+# ตรวจสอบโค้ด
+npm run lint
+
+# ตรวจสอบและแก้ไขอัตโนมัติ (ลบ unused imports)
+npm run lint:fix
+```
+
+**ใน VS Code:**
+
+1. **ติดตั้ง Extensions ที่แนะนำ:**
+
+   - VS Code จะแนะนำ extensions อัตโนมัติเมื่อเปิดโปรเจกต์ (จาก `.vscode/extensions.json`)
+   - หรือติดตั้งเอง:
+     - `Prettier - Code formatter` (esbenp.prettier-vscode)
+     - `ESLint` (dbaeumer.vscode-eslint)
+
+2. **Format on Save (ตั้งค่าแล้วอัตโนมัติ):**
+
+   - เมื่อกด `Ctrl+S` (หรือ `Cmd+S` บน Mac) ไฟล์จะถูก format อัตโนมัติ
+   - Prettier จะจัดรูปแบบโค้ด (ลบ semicolons, format ตาม .prettierrc)
+   - ESLint จะลบ unused imports อัตโนมัติ
+
+3. **หรือใช้ command line:**
+   ```bash
+   npm run format      # Format โค้ดทั้งหมด
+   npm run lint:fix    # ลบ unused imports ในทุกไฟล์
+   ```
 
 ### TypeScript Configuration
 
@@ -457,4 +721,3 @@ MONGO_URL=mongodb://localhost:27017/your-database-name
 ## 📄 License
 
 ISC
-

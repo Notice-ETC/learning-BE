@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "ex01": "ts-node Exercise/exercise-01-basic-types/exercise.ts",
     "ex01:solution": "ts-node Exercise/exercise-01-basic-types/solution.ts",
     "ex02": "ts-node Exercise/exercise-02-number-operations/exercise.ts",
@@ -33,6 +37,7 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
+    "dayjs": "^1.11.19",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.15.1",
@@ -43,6 +48,11 @@
     "@types/express": "^5.0.3",
     "@types/node": "^22.15.30",
     "@types/shortid": "^2.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^9.39.1",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "globals": "^16.5.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
