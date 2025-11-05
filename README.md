@@ -27,8 +27,9 @@ Backend API ที่ใช้ Express.js + TypeScript + MongoDB/Mongoose สำ
 ```
 backend/
 ├── src/
+│   ├── config/
+│   │   └── database.ts              # Database connection configuration
 │   ├── Database/
-│   │   ├── db.ts                    # เชื่อมต่อ MongoDB
 │   │   └── {modelName}/             # Model แต่ละตัว
 │   │       ├── {modelName}.ts       # Mongoose Model
 │   │       ├── Schema/
@@ -408,6 +409,14 @@ npm run ex01
 
 ## 🔧 Configuration
 
+### Configuration Files
+
+ไฟล์ configuration ต่างๆ อยู่ใน `src/config/`:
+
+- `database.ts` - Database connection configuration สำหรับ MongoDB
+  - เชื่อมต่อกับ MongoDB โดยใช้ `MONGO_URL` จาก environment variables
+  - มี error handling และ validation
+
 ### TypeScript Configuration
 
 โปรเจกต์ใช้ TypeScript strict mode เพื่อให้ type safety ดีที่สุด:
@@ -429,12 +438,14 @@ npm run ex01
 
 ### Environment Variables
 
-สร้างไฟล์ `.env` ในโฟลเดอร์ root:
+สร้างไฟล์ `.env` ในโฟลเดอร์ root (สามารถใช้ `.env.example` เป็น template):
 
 ```env
 PORT=5000
 MONGO_URL=mongodb://localhost:27017/your-database-name
 ```
+
+**หมายเหตุ**: ไฟล์ `.env` จะถูก ignore โดย Git เพื่อความปลอดภัย ใช้ `.env.example` เป็น template สำหรับการตั้งค่า
 
 ## 📝 Notes
 

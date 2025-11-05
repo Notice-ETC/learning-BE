@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import createText from  './Router/createText/createText'
-import connectDB from './Database/db';
+import connectDB from './config/database';
 import createShortId from './Router/createShortId';
 // โหลดค่า env
 dotenv.config();
