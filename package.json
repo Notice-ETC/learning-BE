@@ -1,0 +1,50 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "ex01": "ts-node Exercise/exercise-01-basic-types/exercise.ts",
+    "ex01:solution": "ts-node Exercise/exercise-01-basic-types/solution.ts",
+    "ex02": "ts-node Exercise/exercise-02-number-operations/exercise.ts",
+    "ex02:solution": "ts-node Exercise/exercise-02-number-operations/solution.ts",
+    "ex03": "ts-node Exercise/exercise-03-string-operations/exercise.ts",
+    "ex03:solution": "ts-node Exercise/exercise-03-string-operations/solution.ts",
+    "ex04": "ts-node Exercise/exercise-04-functions/exercise.ts",
+    "ex04:solution": "ts-node Exercise/exercise-04-functions/solution.ts",
+    "ex05": "ts-node Exercise/exercise-05-arrow-functions/exercise.ts",
+    "ex05:solution": "ts-node Exercise/exercise-05-arrow-functions/solution.ts",
+    "ex06": "ts-node Exercise/exercise-06-interfaces/exercise.ts",
+    "ex06:solution": "ts-node Exercise/exercise-06-interfaces/solution.ts",
+    "ex07": "ts-node Exercise/exercise-07-arrays/exercise.ts",
+    "ex07:solution": "ts-node Exercise/exercise-07-arrays/solution.ts",
+    "ex08": "ts-node Exercise/exercise-08-type-guards/exercise.ts",
+    "ex08:solution": "ts-node Exercise/exercise-08-type-guards/solution.ts",
+    "ex09": "ts-node Exercise/exercise-09-async-functions/exercise.ts",
+    "ex09:solution": "ts-node Exercise/exercise-09-async-functions/solution.ts",
+    "ex10": "ts-node Exercise/exercise-10-object-operations/exercise.ts",
+    "ex10:solution": "ts-node Exercise/exercise-10-object-operations/solution.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1",
+    "shortid": "^2.2.17"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.15.30",
+    "@types/shortid": "^2.2.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
