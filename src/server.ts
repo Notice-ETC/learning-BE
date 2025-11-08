@@ -6,6 +6,7 @@ import petRouter from './Router/pet'
 import testApi from './Router/testApi'
 import connectDB from './config/database'
 import createText from './Router/createText/createText'
+import getAllText from './Router/getAllText'
 // โหลดค่า env
 dotenv.config()
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/createShortId', createShortId)
 app.use('/createText', createText)
+app.use('/getAllText', getAllText)
 app.use('/pet', petRouter)
 
 app.use('/test', testApi)
