@@ -24,10 +24,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/createShortId', createShortId)
-app.use('/craeteText', createText)
+app.use('/createText', createText)
 app.use('/pet', petRouter)
-
-// app.use('/createText', createText)
 
 app.use('/test', testApi)
 
