@@ -3,11 +3,14 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import createShortId from './Router/createShortId'
 import petRouter from './Router/pet'
+import testApi from './Router/testApi'
+import connectDB from './config/database'
+import createText from './Router/createText/createText'
 // โหลดค่า env
 dotenv.config()
 
 // เชื่อมต่อกับ MongoDB
-// connectDB();
+connectDB()
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -21,10 +24,15 @@ app.get('/', (req, res) => {
 })
 
 app.use('/createShortId', createShortId)
+app.use('/craeteText', createText)
 app.use('/pet', petRouter)
 
 // app.use('/createText', createText)
 
+app.use('/test', testApi)
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
+
+//localhost:5000

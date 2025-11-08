@@ -1,6 +1,6 @@
 import express from 'express'
 import type { Request, Response } from 'express'
-import TestDB from '../../Database/TestDB/TestDB'
+import TestDB from '../../Database/TestDB/Schema/TestDB'
 
 const router = express.Router()
 

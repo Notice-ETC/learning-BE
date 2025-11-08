@@ -435,12 +435,88 @@ curl -X DELETE http://localhost:5000/pet/{petId}
 - `lost` - หาย
 - `deceased` - เสียชีวิต
 
-### Other APIs
+### CreateText API
 
-**ShortId API:**
+CreateText API สำหรับสร้างและบันทึกข้อความลงใน database
+
+#### Endpoints
+
+| Method | Endpoint      | Description               |
+| ------ | ------------- | ------------------------- |
+| POST   | `/createText` | สร้างและบันทึกข้อความใหม่ |
+
+#### ตัวอย่างการใช้งาน
+
+**สร้างข้อความใหม่**
 
 ```bash
-GET /createShortId - สร้าง Short ID ใหม่
+curl -X POST http://localhost:5000/createText \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "ข้อความที่ต้องการบันทึก"
+  }'
+```
+
+**Request Body:**
+
+- `text`: `string` (required) - ข้อความที่ต้องการบันทึก
+
+**Response:**
+
+```json
+{
+  "message": "Text saved successfully",
+  "data": {
+    "_id": "...",
+    "name": "ข้อความที่ต้องการบันทึก",
+    "createdAt": "2024-01-15T00:00:00.000Z",
+    "updatedAt": "2024-01-15T00:00:00.000Z"
+  }
+}
+```
+
+**Error Response (เมื่อไม่ส่ง text):**
+
+```json
+{
+  "error": "Text is required but you not send"
+}
+```
+
+### CreateShortId API
+
+CreateShortId API สำหรับสร้าง Short ID ใหม่
+
+#### Endpoints
+
+| Method | Endpoint         | Description         |
+| ------ | ---------------- | ------------------- |
+| GET    | `/createShortId` | สร้าง Short ID ใหม่ |
+
+#### ตัวอย่างการใช้งาน
+
+**สร้าง Short ID**
+
+```bash
+curl http://localhost:5000/createShortId
+```
+
+**Response:**
+
+```json
+{
+  "message": "ShortId created successfully",
+  "shortId": "abc123xyz"
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "error": "Failed to save text",
+  "details": "Error message details"
+}
 ```
 
 ## 📚 Exercises
